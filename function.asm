@@ -1,6 +1,13 @@
 .model small
 .stack 100h   
-.data
+.data  
+    textfptedu db " ______ _____ _______            _                 _   _             ", 13, 10
+     db "|  ____|  __ \__   __|          | |               | | (_)            ", 13, 10
+     db "| |__  | |__) | | |      ___  __| |_   _  ___ __ _| |_ _  ___  _ __  ", 13, 10
+     db "|  __| |  ___/  | |     / _ \/ _` | | | |/ __/ _` | __| |/ _ \| '_ \ ", 13, 10
+     db "| |    | |      | |    |  __/ (_| | |_| | (_| (_| | |_| | (_) | | | |", 13, 10
+     db "|_|    |_|      |_|     \___|\__,_|\__,_|\___\__,_|\__|_|\___/|_| |_|", 13, 10, "$"
+    
     linea db "Nhap a: $"
     lineb db 0Dh,0Ah,"Nhap b: $"  
     linekq db 0Dh,0Ah,"KQ: $"   
@@ -33,7 +40,7 @@
     ;-------------------------  
     
     ;-------------------------------STUDENT-------------
-    student_count dw 2   ; Number of students 
+    student_count dw 0   ; Number of students 
     name_max_length db 20
 
     ; Array of 3 strings (each 12 bytes: max_len + cur_len + 10 chars) 
@@ -96,7 +103,7 @@
     students_global_index dw 0      
     
     linetest db 0Dh,0Ah,"N: $"   
-    lineborderline db 0Dh,0Ah,"-------------------------------$" 
+    lineborderline db 0Dh,0Ah,"-------------------------------------------------------------------------$"
     line_student_index db 0Dh,0Ah,"Sinh Vien Thu $" 
     line_student_colon db ": $"      
     line_student_name db 0Dh,0Ah,"Vui Long Nhap Ten: $" 
@@ -108,12 +115,13 @@
     line_student_pres1 db 0Dh,0Ah,"Vui Long Nhap Diem Pres1: $"  
     line_student_pres2 db 0Dh,0Ah,"Vui Long Nhap Diem Pres2: $"  
     line_student_fe db 0Dh,0Ah,"Vui Long Nhap Diem FE: $"  
+    line_student_n db 0Dh,0Ah,"Vui Long Nhap So Hoc Sinh: $"  
     line_bar db "=========================================================================",0Dh,0Ah,24h 
     line_barspace db "                          $" 
     line_bartitle db "STUDENT RESULTS$"           
     line_barname DB 0DH, 0AH, "Full Name$"              ;
    ; line_barscore DB "     PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR", 0DH, 0AH, "$"
-    line_barscore DB "            PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR", 0DH, 0AH, "$"
+    line_barscore DB "            PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR$";, 0DH, 0AH, "$"
 
     
     ;--moldule student--
@@ -137,16 +145,29 @@
     ;---------------------------END STUDENT-----------  
     
     char_count db 0  ; Stores the number of printed characters   
-    colorc db 0111b   
+    colorc db 0111b ; usually bl   
     default_text_color db 0111b;
     
-.code
+.code     
+
 ;----------------Main---------------------------
 main proc
     mov ax,@data
     mov ds,ax        
     
-    ;----------------begin----------------
+    ;----------------begin----------------  
+    
+    ; Set text mode (80x25)
+    mov ax, 03h
+    int 10h
+
+    call welcomescreen
+ 
+    ; Wait for key press
+    mov ah, 00h
+    int 16h  
+    
+    call program_setN  
     call program5       
     
     ;-----------------end----------------    
@@ -154,6 +175,14 @@ main proc
     mov ah,4Ch       
     int 21h
 main endp
+
+program_setN proc
+    lea dx,line_student_n 
+    call printf
+    call scanf_int
+    mov student_count,ax 
+    ret
+program_setN endp
 
 program1 proc    
     lea dx,linea       
@@ -409,19 +438,25 @@ program5 proc
                  add si,1
                  call clearscreen
                   
-         loop nhapname 
+         loop nhapname            
+         
+         mov cx,student_count   
+         xor si,si  
+         sortStudent:
+            
+         
+            loop sortStudent
+         
+         
          
          mov cx,student_count   
          xor si,si  
         
-       
-         
-         ;lea dx,lineborderline 
-         ;call printf 
-         
-         
+
          call printf_header
-         
+           
+         lea dx,lineborderline 
+         call printf 
          
          view_student:            
             
@@ -560,22 +595,19 @@ program5 proc
             add ax,s_presR
             add ax,s_feR
             mov s_fr,ax   
-            mov colorc, 00001110b                
+            mov colorc, 00001110b 
+            ;mov colorc, 00001100b  
+                          
             call printf_float    
             
-            
-            
-            call printf_endl  
-              
-              
-           
-           
-        
- 
-                 
+            ;call printf_endl  
+
             add si,1      
          
-         loop view_student 
+         loop view_student   
+         
+         lea dx,lineborderline 
+         call printf 
                   
     ret
 program5 endp   
@@ -1012,6 +1044,61 @@ printf_cstring proc  ;parameter mov bl, 00000110b  ; Yellow text ;dx string
     ret
 printf_cstring endp    
 
+print_colored_stringFPT proc
+    ; Save registers
+    push si
+    push ax
+    push dx
+    push bx
+    push cx
+
+    ; Read current cursor position
+    mov ah, 03h    ; BIOS function: Get cursor position
+    mov bh, 0      ; Page number
+    int 10h        ; Now DH = row, DL = column
+
+    mov si, offset textfptedu   ; Load string address
+
+next_char1:
+    mov al, [si]               ; Load character from string
+    cmp al, '$'                ; End of string?
+    je done1                    ; If yes, exit function
+
+    cmp al, 13                 ; Is it a carriage return?
+    je handle_carriage_return1  ; Yes, move cursor back to start
+
+    cmp al, 10                 ; Is it a newline?
+    je handle_newline1          ; Yes, move cursor down
+
+    ;call generate_random_rainbow_text_color1 ; Get random color in BL
+    call print_colored_char    ; Print character with color
+
+    inc si                     ; Move to next character
+    jmp next_char1              ; Repeat
+
+handle_carriage_return1:
+    mov dl, 0                  ; Move cursor to start of line
+    inc si                     ; Skip this character
+    jmp next_char1
+
+handle_newline1:
+    inc dh                     ; Move cursor down one row
+    mov dl, 0                  ; Reset to start of new line
+    mov ah, 02h                ; BIOS set cursor position
+    int 10h                    ; Update cursor
+    inc si                     ; Skip this character
+    jmp next_char1
+
+done1:
+    ; Restore registers
+    pop cx
+    pop bx
+    pop dx
+    pop ax
+    pop si
+    ret
+print_colored_stringFPT endp
+
 
 printf_header proc
     lea dx,line_bar
@@ -1233,8 +1320,12 @@ int_to_float endp
 
 clearscreen proc    
     push ax
+   
     MOV AX, 3  
     INT 10H      ; Call BIOS interrupt
+   
+    call welcomescreen
+    
     pop ax   
     ret
 clearscreen endp     
@@ -1246,5 +1337,26 @@ printf_tab proc
     int 10h
     pop ax
     ret
-printf_tab endp
+printf_tab endp 
+
+fptlogo_screen proc     
+    call printf_endl
+    lea dx,textfptedu   
+    ;call printf;
+    mov bl,00000110b
+    call print_colored_stringFPT  
+    ret    
+fptlogo_screen endp 
+    
+welcomescreen proc    
+    ; Set cursor position (row 5, column 10)
+    mov ah, 02h
+    mov bh, 0     ; Page number
+    mov dh, 5     ; Row
+    mov dl, 10    ; Column
+    int 10h  
+    call fptlogo_screen
+    ret
+welcomescreen endp
+
 end main   
