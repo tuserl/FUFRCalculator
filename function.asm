@@ -438,14 +438,15 @@ program5 proc
                  call set_student_info_at_index 
   
                  call printf_endl
-                 
-                 add si,1
+ 
                  call clearscreen    
                  
                  push cx
                  mov cx,1
                  call view_student_table
-                 pop cx
+                 pop cx                   
+                 
+                 add si,1
                   
          loop nhapname            
          
@@ -455,7 +456,8 @@ program5 proc
             
          
          ;   loop sStudent
-        call clearscreen 
+        call clearscreen    
+        xor si,si
         mov cx,student_count   
         call view_student_table
                   
@@ -465,11 +467,7 @@ program5 endp
 view_student_table proc
          
          push cx
-         push si
-     
-          
-         xor si,si  
-        
+         push si 
 
          call printf_header
            
