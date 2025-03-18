@@ -440,20 +440,34 @@ program5 proc
                  call printf_endl
                  
                  add si,1
-                 call clearscreen
+                 call clearscreen    
+                 
+                 push cx
+                 mov cx,1
+                 call view_student_table
+                 pop cx
                   
          loop nhapname            
          
-         mov cx,student_count   
-         xor si,si  
-         sortStudent:
+         ;mov cx,student_count   
+         ;xor si,si  
+         ;sStudent:
             
          
-            loop sortStudent
+         ;   loop sStudent
+        call clearscreen 
+        mov cx,student_count   
+        call view_student_table
+                  
+    ret
+program5 endp   
+
+view_student_table proc
          
-         
-         
-         mov cx,student_count   
+         push cx
+         push si
+     
+          
          xor si,si  
         
 
@@ -611,10 +625,12 @@ program5 proc
          loop view_student   
          
          lea dx,lineborderline 
-         call printf 
-                  
+         call printf     
+         
+         pop si
+         pop cx    
     ret
-program5 endp   
+view_student_table endp
  
  
 generate_random_color proc
