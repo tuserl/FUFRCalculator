@@ -115,7 +115,7 @@
     line_student_pres1 db 0Dh,0Ah,"Vui Long Nhap Diem Pres1: $"  
     line_student_pres2 db 0Dh,0Ah,"Vui Long Nhap Diem Pres2: $"  
     line_student_fe db 0Dh,0Ah,"Vui Long Nhap Diem FE: $"  
-    line_student_n db 0Dh,0Ah,"Vui Long Nhap So Hoc Sinh: $"  
+    line_student_n db 0Dh,0Ah,"Vui Long Nhap So Luong Sinh Vien: $"  
     line_bar db "=========================================================================",0Dh,0Ah,24h 
     line_barspace db "                          $" 
     line_bartitle db "STUDENT RESULTS$"           
