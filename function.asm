@@ -44,37 +44,41 @@
     name_max_length db 20
 
     ; Array of 3 strings (each 12 bytes: max_len + cur_len + 10 chars) 
-    ;| Max Length (1B) | Current Length (1B) | Name (N Bytes) N DUP('$') |
-    students DB 20, 0, 20 DUP('$')  ;line student testx016
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')  ;line student testx016
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')  ;line student testx016
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
-             DB 20, 0, 20 DUP('$') 
-             DB 20, 0, 20 DUP('$')   
+    ;| Max Length (1B) | Current Length (1B) | Name (N Bytes) N DUP('$') |    
+    students DB 30 DUP(20, 0, '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$')              
+    ;students DB 30 DUP(20, 0, 20 DUP('$'))
+    
+    ;students DB 20, 0, 20 DUP('$')  ;line student testx016
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')  ;line student testx016
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')  ;line student testx016
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    ;         DB 20, 0, 20 DUP('$') 
+    ;         DB 20, 0, 20 DUP('$')   
+    
     
     students_pt1_score dw  30 dup(0)   
     students_pt2_score dw  30 dup(0)   
