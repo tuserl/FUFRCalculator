@@ -41,11 +41,11 @@
     
     ;-------------------------------STUDENT-------------
     student_count dw 0   ; Number of students 
-    name_max_length db 20
+    name_max_length db 23
 
     ; Array of 3 strings (each 12 bytes: max_len + cur_len + 10 chars) 
     ;| Max Length (1B) | Current Length (1B) | Name (N Bytes) N DUP('$') |    
-    students DB 30 DUP(20, 0, '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$')              
+    students DB 30 DUP(30, 0, '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$', '$')              
     ;students DB 30 DUP(20, 0, 20 DUP('$'))
     
     ;students DB 20, 0, 20 DUP('$')  ;line student testx016
@@ -97,7 +97,7 @@
     ;students DB 30 DUP(20, 0, 20 DUP('$'))  ; 30 students, each 22 bytes //line student testx015
 
     ;30 DUP(...) Creates 30 student entries.
-    students_indexinc dw 22 ;21 will work not 22 I dont know why 22( set it to 22 only works if i use  //line student testx016 and remove //line student testx015)
+    students_indexinc dw 32 ;21 will work not 22 I dont know why 22( set it to 22 only works if i use  //line student testx016 and remove //line student testx015)
 
    
     score  dw 30 dup(0)  ;khai bao bien mang 
@@ -125,7 +125,7 @@
     line_bartitle db "STUDENT RESULTS$"           
     line_barname DB 0DH, 0AH, "Full Name$"              ;
    ; line_barscore DB "     PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR", 0DH, 0AH, "$"
-    line_barscore DB "            PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR$";, 0DH, 0AH, "$"
+    line_barscore DB "               PT1  PT2  PT3  Lab1 Lab2 Pres1 Pres2  FE   FR$";, 0DH, 0AH, "$"
 
     
     ;--moldule student--
