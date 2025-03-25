@@ -176,14 +176,21 @@ main proc
     
     ;-----------------end----------------    
           
+    call program_end
+main endp
+
+program_end proc
     mov ah,4Ch       
     int 21h
-main endp
+program_end endp
 
 program_setN proc
     lea dx,line_student_n 
     call printf
-    call scanf_int
+    call scanf_float     
+    xor dx,dx
+    mov bx,100
+    div bx
     mov student_count,ax 
     ret
 program_setN endp
@@ -1252,6 +1259,9 @@ scanf_float proc ;return ax (fixed-point with two decimal places)
             cmp AL, 08h    
             je scanf_float_HANDLE_BACKSPACE  ; Jump if AL == 08h (Backspace pressed)
             
+             cmp AL, 'q'    
+            je scanf_float_QUIT  ; Jump if AL == 'q'
+            
             ; Check if input is a dot '.'
             cmp AL, '.'
             je scanf_float_VALID       ; If AL == '.', valid
@@ -1282,7 +1292,10 @@ scanf_float proc ;return ax (fixed-point with two decimal places)
                 MOV AH, 02h  ; Function to move cursor
                 INT 10h      ; Update cursor position      
                                                
-            jmp scanf_float_BEGIN 
+            jmp scanf_float_BEGIN    
+            
+            scanf_float_QUIT:
+                call program_end 
             
        scanf_float_VALID:
  
