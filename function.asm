@@ -1232,18 +1232,36 @@ scanf_int proc ;return ax
 scanf_int endp
 
 scanf_float proc ;return ax (fixed-point with two decimal places)  
-          push cx
+          push cx  
+          ;-----------
           mov bx,10
           mov num0,0
           mov seen_decimal,0 
           mov divisor,1
-          nhapf:
+          nhapf:        
+                  
+       scanf_float_NOT_VALID:    
+       
             mov ah,01h 
-            int 21h   
+            int 21h       
             
             cmp al, 0Dh
             je endnhapf
             
+            ; Check if input is a dot '.'
+            cmp AL, '.'
+            je scanf_float_VALID       ; If AL == '.', valid
+            
+            ; Check if input is between '0' (48) and '9' (57)
+            cmp AL, '0'
+            jl scanf_float_NOT_VALID   ; If AL < '0', invalid
+            cmp AL, '9'
+            jle scanf_float_VALID      ; If AL <= '9', valid    
+            
+            jmp scanf_float_NOT_VALID
+            
+       scanf_float_VALID:
+ 
             cmp al,2Eh
             je seen_decimal_part
            
@@ -1302,7 +1320,7 @@ printf_float proc ;print ax
         
          mov al,default_text_color
          mov colorc, al
-         
+         ;-------
          pop cx   
           
          ret    
@@ -1360,9 +1378,9 @@ printf_tab endp
 fptlogo_screen proc     
     call printf_endl
     lea dx,textfptedu   
-    ;call printf;
+    call printf;
     mov bl,00000110b
-    call print_colored_stringFPT  
+    ;call print_colored_stringFPT  
     ret    
 fptlogo_screen endp 
     
