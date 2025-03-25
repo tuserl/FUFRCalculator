@@ -1234,6 +1234,7 @@ scanf_int endp
 scanf_float proc ;return ax (fixed-point with two decimal places)  
           push cx  
           ;-----------
+          scanf_float_BEGIN:
           mov bx,10
           mov num0,0
           mov seen_decimal,0 
@@ -1246,7 +1247,10 @@ scanf_float proc ;return ax (fixed-point with two decimal places)
             int 21h       
             
             cmp al, 0Dh
-            je endnhapf
+            je endnhapf        
+            
+            cmp AL, 08h    
+            je scanf_float_HANDLE_BACKSPACE  ; Jump if AL == 08h (Backspace pressed)
             
             ; Check if input is a dot '.'
             cmp AL, '.'
@@ -1258,7 +1262,27 @@ scanf_float proc ;return ax (fixed-point with two decimal places)
             cmp AL, '9'
             jle scanf_float_VALID      ; If AL <= '9', valid    
             
-            jmp scanf_float_NOT_VALID
+            jmp scanf_float_NOT_VALID  
+            
+            scanf_float_HANDLE_BACKSPACE:
+                ; Get current cursor position
+                mov ah, 03h        ; BIOS function: Get cursor position
+                mov bh, 0          ; Page number
+                int 10h            ; Cursor row in DH, column in DL
+            
+                ;DEC DL       ; Move cursor one position left
+                ;MOV AH, 02h  ; Function to move cursor
+                ;INT 10h      ; Update cursor position
+                ;MOV AH, 09h  ; Function to print character
+                ;MOV AL, ' '  ; Print a space
+                ;INT 10h
+              
+                INC DL       ; Move cursor one position right x2    
+                INC DL
+                MOV AH, 02h  ; Function to move cursor
+                INT 10h      ; Update cursor position      
+                                               
+            jmp scanf_float_BEGIN 
             
        scanf_float_VALID:
  
